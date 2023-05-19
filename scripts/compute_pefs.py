@@ -34,7 +34,8 @@ flags.DEFINE_integer("n_fisher_values_per_example", None, "Number of non-zero en
 flags.DEFINE_bool("from_pt", True, "Whether the model is from PyTorch. For Hugging Face models only.")
 
 # Text task only flags:
-flags.DEFINE_integer("sequence_length", 128, "Note that this is used to set image sizes as well.")
+flags.DEFINE_integer("sequence_length", 128, "Sequence length to use for transformers.")
+flags.DEFINE_string("tokenizer", None, "Tokenizer to use. Defaults to --model if not set for a text task.")
 
 # Required for LVRM_PEF. Optional for D_PEF, if left unset it will use all classes. Must be
 # unset for LRM_PEF.
