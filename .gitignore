@@ -1,3 +1,16 @@
+*.i
+*.ii
+*.gpu
+# c++ stuff
+*.ptx
+*.cubin
+*.fatbin
+
+build/
+Testing/
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
