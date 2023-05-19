@@ -16,7 +16,6 @@ PEF_FLAVORS = ['D_PEF', 'LRM_PEF', 'LVRM_PEF']
 
 FLAGS = flags.FLAGS
 
-
 flags.DEFINE_string("output_filepath", None, "Path to h5 file to write output to.")
 
 FLAGS.DEFINE_enum('pef_type', None, PEF_FLAVORS, 'Type of PEF to compute.')
@@ -137,8 +136,8 @@ def main(_):
     saver = create_saver(model, variables)
 
     # TODO: Maybe add some safety in case n_examples is greater than the size of the dataset?
-    output_path = os.path.expanduser(FLAGS.output_path)
-    saver.compute_and_save_pefs(output_path, ds)
+    output_filepath = os.path.expanduser(FLAGS.output_filepath)
+    saver.compute_and_save_pefs(output_filepath, ds)
 
 
 if __name__ == "__main__":

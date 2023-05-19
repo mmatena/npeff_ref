@@ -1,7 +1,7 @@
 """Classes holding representations of PEFs."""
 import os
 import dataclasses
-from typing import Sequence
+from typing import Sequence, Union
 
 import h5py
 import numpy as np
@@ -18,13 +18,40 @@ from npeff.util import hdf5_util
 
 def load_logits(pefs_filepath: str) -> np.ndarray:
     with h5py.File(os.path.expanduser(pefs_filepath), "r") as f:
-        return hdf5_util.load_h5_ds(f['data/logits'])
+        if 'data/predicted_logits' in f:
+            return hdf5_util.load_h5_ds(f['data/predicted_logits'])
+        else:
+            return hdf5_util.load_h5_ds(f['data/logits'])
 
 
 def load_labels(pefs_filepath: str) -> np.ndarray:
     with h5py.File(os.path.expanduser(pefs_filepath), "r") as f:
         return hdf5_util.load_h5_ds(f['data/labels'])
 
+
+###############################################################################
+
+def infer_pefs_file_class(pefs_filepath: str):
+    """Infers the type of PEFs contained in a PEFs file.
+    
+    Does a quick heuristic check based on the presence of datasets with the h5 file.
+    """
+    with h5py.File(os.path.expanduser(pefs_filepath), "r") as f:
+        if 'data/fisher/values' in f:
+            return SparseDiagonalPefs
+        elif 'data/ranks' in f:
+            return SparseLvrmPefs
+        elif 'data/col_offsets' in f:
+            return SparseLrmPefs
+        else:
+            return None
+
+
+def load(pefs_filepath: str) -> Union['SparseDiagonalPefs', 'SparseLrmPefs', 'SparseLvrmPefs']:
+    pefs_cls = infer_pefs_file_class(pefs_filepath)
+    if pefs_cls is None:
+        raise ValueError(f'File not recognized as a PEFs file: {pefs_filepath}')
+    return pefs_cls.load(pefs_filepath)
 
 ###############################################################################
 
