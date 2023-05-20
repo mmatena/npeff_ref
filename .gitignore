@@ -9,6 +9,8 @@
 build/
 Testing/
 
+/README.html
+
 
 
 # Byte-compiled / optimized / DLL files

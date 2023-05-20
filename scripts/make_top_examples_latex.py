@@ -67,7 +67,7 @@ def main(_):
     W = decomps.load_W(FLAGS.decomposition_filepath)
     logits = pefs.load_logits(FLAGS.pef_filepath)
 
-    generator = latex_generator.TopExampleLatexGenerator(
+    generator = latex_generator.TopExamplesLatexGenerator(
         W=W,
         logits=logits,
         raw_ds=ds,

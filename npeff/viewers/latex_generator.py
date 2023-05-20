@@ -77,7 +77,7 @@ class Example:
 
 
 @dataclasses.dataclass
-class TopExampleLatexGenerator:
+class TopExamplesLatexGenerator:
     # NPEFF coefficients.
     # W.shape = [n_npeff_examples, n_components]
     W: np.ndarray
@@ -182,6 +182,8 @@ class TopExampleLatexGenerator:
     def make_latex(self, component_indices: Optional[List[int]] = None) -> str:
         if component_indices is None:
             component_indices = list(range(self.n_components))
+        else:
+            component_indices = [int(i) for i in component_indices]
 
         body = '\n\n'.join([
             self._make_latex_for_component(i)
