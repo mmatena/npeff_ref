@@ -34,6 +34,10 @@ def load(
     return ds
 
 
+def load_raw(task: str, split: str):
+    raise NotImplementedError
+
+
 def n_classes_for_task(task: str):
     return 1000
 

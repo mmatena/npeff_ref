@@ -20,6 +20,18 @@ def load(
     tokenizer,
     sequence_length: int,
 ):
+    ds = load_raw(task, split)
+    ds = ds.map(_to_mnli_style)
+    ds = glue.convert_dataset_to_features(
+        ds,
+        tokenizer,
+        sequence_length,
+        task='mnli',
+    )
+    return ds
+
+
+def load_raw(task: str, split: str):
     if task not in SNLI_TASK_NAMES:
         raise ValueError(f'Invalid snli task: {task}')
 
@@ -28,13 +40,6 @@ def load(
     if split == 'train_skip_50k':
         ds = ds.skip(50_000)
 
-    ds = ds.map(_to_mnli_style)
-    ds = glue.convert_dataset_to_features(
-        ds,
-        tokenizer,
-        sequence_length,
-        task='mnli',
-    )
     return ds
 
 

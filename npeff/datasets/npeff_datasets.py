@@ -30,6 +30,21 @@ def load(
     )
 
 
+def load_raw(
+    task_ri: str,
+    split: str,
+    *extra_args,
+    **extra_kwargs,
+) -> tf.data.Dataset:
+    """Loads the raw dataset, essentially directly from tfds.
+
+    Might not be implemented for every dataset.
+    """
+    group, task = split_task_ri(task_ri)
+    return _get_group_module(group).load_raw(
+        task=task, split=split, *extra_args, **extra_kwargs)
+
+
 def n_classes_for_task(task_ri: str) -> int:
     group, task = split_task_ri(task_ri)
     return _get_group_module(group).n_classes_for_task(task)

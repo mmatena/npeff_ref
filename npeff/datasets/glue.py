@@ -62,6 +62,11 @@ def load(
     )
 
 
+def load_raw(task: str, split: str):
+    tfds_task = _to_tfds_task_name(task, split)
+    return tfds.load(f"glue/{tfds_task}", split=split)
+
+
 def n_classes_for_task(task: str):
     if task not in GLUE_TASK_NAMES:
         raise ValueError(f'Invalid glue task: {task}')

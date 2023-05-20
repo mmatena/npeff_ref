@@ -41,7 +41,7 @@ flags.DEFINE_string("model", None, "String indicating model to use.")
 
 flags.DEFINE_string("task", None, "String indicating dataset to use. See npeff_datasets for more info.")
 flags.DEFINE_string("split", None, "Split of dataset to use.")
-flags.DEFINE_integer("n_examples", None, "Numbmer of examples to use to compute PEFs.")
+flags.DEFINE_integer("n_examples", None, "Number of examples to use to compute PEFs.")
 flags.DEFINE_integer("batch_size", 64, "Batch size to use when evaluating perturbed models.")
 
 flags.DEFINE_list("component_indices", None, 'Leave set to None to run on all components.')
@@ -61,8 +61,8 @@ flags.DEFINE_enum("special_processing", None, SPECIAL_PROCESSING_TYPES, "Optiona
 flags.DEFINE_bool("from_pt", True, "Whether the model is from PyTorch. For Hugging Face models only.")
 
 # Text task only flags:
-flags.DEFINE_integer("sequence_length", 128, "Note that this is used to set image sizes as well.")
-flags.DEFINE_string("tokenizer", None, "Tokenizer to use. Defaults to --model if not set for a text task.")
+flags.DEFINE_integer("sequence_length", 128, "Length of sequence to use for transformer models.")
+flags.DEFINE_string("tokenizer", None, "Hugging Face tokenizer to use. Defaults to --model if not set for a text task.")
 
 
 ##########################################################################
@@ -120,6 +120,9 @@ def main(_):
 
     eval_ctx = evaluation.EvaluationContext.create_from_ds_and_logits(
         ds=ds, logits=logits, batch_size=FLAGS.batch_size)
+
+    if FLAGS.special_processing == 'NLI_RELABEL':
+        eval_ctx.all_examples = (eval_ctx.all_examples[0], (eval_ctx.all_examples[1] + 1) % 3)
 
     decomp = decomps.LrmNpeffDecomposition.load(FLAGS.decomposition_filepath)
 
