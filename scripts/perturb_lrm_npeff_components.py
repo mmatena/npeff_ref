@@ -1,4 +1,4 @@
-"""Runs perturbation experiments for L(V)RM components.
+"""Runs perturbation experiments for L(V)RM-NPEFF components.
 
 For each component, this script will print:
     - Maximum perturbed model KL-divergence ratio.

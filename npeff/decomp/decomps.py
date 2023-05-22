@@ -37,6 +37,11 @@ class DNpeffDecomposition:
 
     # Equivalent to full dense size.
     n_parameters: int
+
+    def get_h_vector(self, component_index: int) -> np.ndarray:
+        ret = np.zeros([self.n_parameters], dtype=np.float32)
+        ret[self.new_to_old_col_indices] = self.H[component_index]
+        return ret
     
     def save(self, filepath: str):
         with h5py.File(os.path.expanduser(filepath), "w") as f:
@@ -76,11 +81,11 @@ class SparseDNpeffDecomposition:
     # shape = [n_examples, n_components]
     W: np.ndarray
 
-    # shape = [n_components, n_features], dtype=np.int32
     H_shape: np.ndarray
+
     # shape = [nnz], dtype=float32
     H_values: np.ndarray
-    # shape = [n_examples + 1], dtype=int64
+    # shape = [n_components + 1], dtype=int64
     H_row_indices: np.ndarray
     # shape = [nnz], dtype=int32
     H_column_indices: np.ndarray
@@ -92,6 +97,18 @@ class SparseDNpeffDecomposition:
 
     # Equivalent to full dense size.
     n_parameters: int
+
+    def get_h_vector(self, component_index: int) -> np.ndarray:
+        start = self.H_row_indices[component_index]
+        end = self.H_row_indices[component_index + 1]
+        
+        h = np.zeros([self.H_shape[1]], dtype=np.float32)
+        h[self.H_column_indices[start:end]] = self.H_values[self.H_values[start:end]]
+
+        ret = np.zeros([self.n_parameters], dtype=np.float32)
+        ret[self.new_to_old_col_indices] = h
+
+        return ret
 
     def save(self, filepath: str):
         with h5py.File(os.path.expanduser(filepath), "w") as f:
