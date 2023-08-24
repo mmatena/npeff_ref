@@ -55,7 +55,7 @@ def main(_):
     for comp_index in get_component_indices():
         img = generator.make_collage(comp_index)
         filename = f'{FLAGS.image_filename_prefix}{comp_index}.{FLAGS.image_extension}'
-        plt.imsave(os.path.join(output_directory, filename, img)
+        plt.imsave(os.path.join(output_directory, filename, img))
 
 
 if __name__ == "__main__":

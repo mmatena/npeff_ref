@@ -59,7 +59,7 @@ For information on their flags, please see their corresponding source files.
 - `fit_m_npeff_coeffs`: Fits NPEFF coefficients to a set of LRM-PEFs given an LRM-NPEFF decomposition. Each LRM-PEF must have the same rank.
 - `run_m_npeff_expansion`: Performs a dictionary expansion procedure on a set of LRM-PEFs. Each LRM-PEF must have the same rank.
 - `run_lvrm_npeff`: Performs the dictionary learning procedure on a set of LRM-PEFs. The LRM-PEFs can have different ranks for different examples.
-- `fit_lvrm_coeffs`: Fits NPEFF coefficients to a set of LRM-PEFs given an LRM-NPEFF decomposition. he LRM-PEFs can have different ranks for different examples.
+- `fit_lvrm_coeffs`: Fits NPEFF coefficients to a set of LRM-PEFs given an LRM-NPEFF decomposition. The LRM-PEFs can have different ranks for different examples.
 
 
 ### Python
@@ -69,8 +69,15 @@ They contain library code and scripts, respectively.
 Here is an overview of the available scripts within the `scripts` directory.
 For information on their flags, please see their corresponding Pythong files.
 
-- `compute_pefs.py`: 
+- `compute_d_dsf.py`: Computes the diagonal approximation of a dataset-level Fisher matrix.
+- `compute_pefs.py`: Computes and save PEFs to an hdf5 file. Flags allow for computation of either D-PEFs or LRM-PEFs.
+- `filter_pefs.py`: Filters a saved set of PEFs to create a new set of PEFs satisfying some critera. Currently, only filtering to create a set of PEFs corresponding to examples the model made incorrect predictions for is supported.
+- `make_top_examples_collages.py`: Makes collages of top component examples for NPEFFs of image models.
+- `make_top_examples_latex.py`: Makes a LaTeX document containing top component examples for NPEFFs of text models.
+<!-- - `perturb_d_npeff_components.py`:  -->
+- `perturb_lrm_npeff_components.py`: Runs perturbation experiments for LRM-NPEFF decompositions.
+- `sparsify_d_npeff.py`: Converts the H matrix of a D-NPEFF decomposition into a sparse representation.
 
 
-## Example Workflows
+<!-- ## Example Workflows -->
 
