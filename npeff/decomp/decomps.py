@@ -177,6 +177,21 @@ class LrmNpeffDecomposition:
         self.G /= np.sqrt(norms) + eps
         self.W *= norms.T + eps
 
+    def get_g(self, component_index: int) -> np.ndarray:
+        return self.G[component_index]
+
+    def get_full_g(self, component_index: int) -> np.ndarray:
+        g = np.zeros([self.n_parameters], dtype=np.float32)
+        g[self.new_to_old_col_indices] = self.G[component_index]
+        return g
+
+    def get_full_normalized_g(self, component_index: int) -> np.ndarray:
+        g0 = self.G[component_index]
+        norm = np.sqrt(np.sum(g0**2))
+        g = np.zeros([self.n_parameters], dtype=np.float32)
+        g[self.new_to_old_col_indices] = g0 / norm
+        return g
+
     @classmethod
     def load(cls, filepath: str, *, read_G: bool = True):
         with h5py.File(os.path.expanduser(filepath), "r") as f:
@@ -216,3 +231,70 @@ class LrmNpeffDecomposition:
         
             hdf5_util.save_h5_ds(losses, 'G_only', self.losses_G_only)
             hdf5_util.save_h5_ds(losses, 'joint', self.losses_joint)
+
+
+###############################################################################
+
+
+@dataclasses.dataclass
+class LazyLoadedLrmNpeffDecomposition:
+    '''Component Gs will be loaded as needed.'''
+
+    # Path to H5 file containing the decomposition.
+    filepath: str
+
+    # shape = [n_examples, n_components]
+    W: np.ndarray
+
+    # shape = [n_features], dtype=np.int32
+    # Indices of parameters in original that are kept in the reduced
+    # per-example Fishers.
+    new_to_old_col_indices: np.ndarray
+
+    # Equivalent to full dense size.
+    n_parameters: int
+
+    n_classes: int
+
+    # Loss information
+    log_loss_frequency: int
+    losses_G_only: np.ndarray
+    losses_joint: np.ndarray
+
+    def __post_init__(self):
+        self._g_cache = {}
+
+    def get_g(self, component_index: int) -> np.ndarray:
+        # ret.shape = [n_features]
+        if component_index not in self._g_cache:
+            with h5py.File(os.path.expanduser(self.filepath), "r") as f:
+                self._g_cache[component_index] = f['data/G'][component_index]
+        return self._g_cache[component_index]
+
+    def get_full_g(self, component_index: int) -> np.ndarray:
+        # ret.shape = [n_parameters]
+        g = np.zeros([self.n_parameters], dtype=np.float32)
+        g[self.new_to_old_col_indices] = self.get_g(component_index)
+        return g
+
+    def get_full_normalized_g(self, component_index: int) -> np.ndarray:
+        # ret.shape = [n_parameters]
+        g0 = self.get_g(component_index)
+        norm = np.sqrt(np.sum(g0**2))
+        g = np.zeros([self.n_parameters], dtype=np.float32)
+        g[self.new_to_old_col_indices] = g0 / norm
+        return g
+
+    @classmethod
+    def load(cls, filepath: str):
+        with h5py.File(os.path.expanduser(filepath), "r") as f:
+            return cls(
+                filepath=filepath,
+                W=hdf5_util.load_h5_ds(f['data/W']),
+                new_to_old_col_indices=hdf5_util.load_h5_ds(f['data/new_to_old_col_indices']),
+                n_parameters=f['data'].attrs['n_parameters'],
+                n_classes=f['data'].attrs['n_classes'],
+                log_loss_frequency=f['losses'].attrs['log_loss_frequency'],
+                losses_G_only=hdf5_util.load_h5_ds(f['losses/G_only']),
+                losses_joint=hdf5_util.load_h5_ds(f['losses/joint']),
+            )
