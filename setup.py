@@ -6,6 +6,6 @@ setup(
     # description='A useful module',
     # author='Man Foo',
     # author_email='foomail@foo.example',
-    # packages=['npeff'],  #same as name
+    packages=['npeff'],
     # install_requires=['wheel', 'bar', 'greek'], #external packages as dependencies
 )
