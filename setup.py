@@ -7,5 +7,6 @@ setup(
     # author='Man Foo',
     # author_email='foomail@foo.example',
     packages=['npeff'],
+    scripts=['scripts'],
     # install_requires=['wheel', 'bar', 'greek'], #external packages as dependencies
 )
