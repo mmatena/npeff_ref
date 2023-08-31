@@ -67,7 +67,7 @@ Python code is contained in the `npeff` and `scripts` directories.
 They contain library code and scripts, respectively.
 
 Here is an overview of the available scripts within the `scripts` directory.
-For information on their flags, please see their corresponding Pythong files.
+For information on their flags, please see their corresponding Python files.
 
 - `compute_d_dsf.py`: Computes the diagonal approximation of a dataset-level Fisher matrix.
 - `compute_pefs.py`: Computes and save PEFs to an hdf5 file. Flags allow for computation of either D-PEFs or LRM-PEFs.
