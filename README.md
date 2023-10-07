@@ -3,6 +3,7 @@
 
 <!-- TODO: Link paper once on arxiv. -->
 This repo contains implementations of some of the methods introduced in *NPEFF: Non-Negative Per-Example Fisher Factorization*.
+Code for some visualizations is contained in https://github.com/mmatena/npeff_tracer.
 
 ## Overview
 
